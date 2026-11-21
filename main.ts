@@ -20,6 +20,13 @@ writeFileSync(outPath, TEXT, 'utf8');
 const written = readFileSync(outPath);
 const expected = Buffer.from(TEXT, 'utf8');
 const codePoints = [...TEXT].length;
+
+// The competition allows 1–280 code points; refuse a blank or
+// out-of-range essay instead of submitting something invalid.
+if (TEXT.trim().length === 0 || codePoints < 1 || codePoints > 280) {
+  console.error(`invalid essay: ${codePoints} code points (must be 1-280) and must not be blank`);
+  process.exit(1);
+}
 if (!written.equals(expected)) {
   console.error(`mismatch: wrote ${written.length} bytes, expected ${expected.length} bytes`);
   process.exit(1);
